@@ -4,6 +4,7 @@
     <style>
 @import url('https://fonts.googleapis.com/css2?family=Italiana&family=Wix+Madefor+Display:wght@400..800&display=swap');
 </style>
+
 <meta charset="UTF-8" />
 <title>Here, Flower Picking, Manila North</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,9 +33,9 @@
     z-index: 20;
   }
 
-  /* lowered title */
+  /* title */
   #title {
-  font-family: "Italiana", serif;
+    font-family: "Italiana", serif;
     position: absolute;
     top: 20%;
     left: 50%;
@@ -46,7 +47,7 @@
     z-index: 10;
   }
 
-  /* lowered start box */
+  /* start box */
   #start-box {
     position: absolute;
     top: 72%;
@@ -91,20 +92,46 @@
 
 <body>
 
+  <!-- Hidden background music -->
+  <audio id="bgm" src="picture/bg-music.mp3" loop></audio>
+
   <div id="title">Here Lies a Flower</div>
 
-  <div id="start-box" onclick="openPopup()">
-    <br><br>
-
-  </div>
+  <div id="start-box" onclick="startExperience()"></div>
 
   <div id="footer">if nothing happens, check your popup settings</div>
 
   <div id="texture-overlay"></div>
 
 <script>
-function openPopup() {
-  // Bigger centered popup for poem.html
+function fadeInAudio(audio, targetVolume = 0.4, duration = 3000) {
+  audio.volume = 0; // start silent
+  const steps = 30; 
+  const stepTime = duration / steps;
+  const volumeStep = targetVolume / steps;
+
+  let currentStep = 0;
+
+  const fadeInterval = setInterval(() => {
+    currentStep++;
+    audio.volume = Math.min(targetVolume, audio.volume + volumeStep);
+
+    if (currentStep >= steps) {
+      clearInterval(fadeInterval);
+    }
+  }, stepTime);
+}
+
+function startExperience() {
+  const audio = document.getElementById("bgm");
+
+  audio.play().then(() => {
+    fadeInAudio(audio); // smooth fade-in
+  }).catch(err => {
+    console.log("Autoplay blocked until user interacts.");
+  });
+
+  // open poem popup
   const popupWidth  = 1100;
   const popupHeight = 700;
 

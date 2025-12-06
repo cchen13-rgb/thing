@@ -139,7 +139,7 @@
 
     <div id="right-panel">
       <div id="right-overlay"></div>
-  
+      <div id="hint">click each line to let the next one appear · some lines open a window</div>
       <div id="credit-tile">keep going</div>
     </div>
   </div>
@@ -191,6 +191,19 @@ const rightPanel = document.getElementById("right-panel");
 const creditTile = document.getElementById("credit-tile");
 const created = [];
 
+/* ---------- sound: every popup gets a random flower sound ---------- */
+function playPopupSound() {
+  const src = Math.random() < 0.5
+    ? "picture/flower1.mp3"
+    : "picture/flower2.mp3";
+
+  const audio = new Audio(src);
+  audio.volume = 0.85;
+  audio.play().catch(err => {
+    console.log("popup sound blocked:", err);
+  });
+}
+
 /* ---------- create poem lines ---------- */
 function initLines() {
   LINES.forEach((line, i) => {
@@ -215,7 +228,10 @@ function initLines() {
 function handleClick(i, node) {
   const line = LINES[i];
 
-  if (line.popupKey) openMiniPopup(line.popupKey);
+  if (line.popupKey) {
+    playPopupSound();              // 🎵 sound for EVERY popup
+    openMiniPopup(line.popupKey);  // then open the visual popup
+  }
 
   const next = i + 1;
   if (next < created.length) {
@@ -225,7 +241,7 @@ function handleClick(i, node) {
   }
 }
 
-/* ---------- mini popup ---------- */
+/* ---------- mini popup (visual only) ---------- */
 function openMiniPopup(key) {
   const cfg = POPUPS[key];
   if (!cfg) return;
@@ -241,8 +257,8 @@ function openMiniPopup(key) {
 
   const text = cfg.lines[Math.floor(Math.random() * cfg.lines.length)];
 
-  win.document.write(`
-  <html><head><style>
+  win.document.write(`<!DOCTYPE html>
+  <html><head><meta charset="UTF-8"><style>
     body {
       margin: 0;
       background: #000;
@@ -277,6 +293,8 @@ function openMiniPopup(key) {
     <div class="glow"></div>
     <div class="text">${text}</div>
   </body></html>`);
+
+  win.document.close();
 }
 
 /* ---------- credit button: alert + go to scene1 ---------- */

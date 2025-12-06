@@ -61,6 +61,7 @@
     pointer-events: auto;
     opacity: 1;
     transition: opacity 0.8s ease, transform 0.6s ease;
+    cursor: pointer;
   }
 
   /* TREE (made higher & larger) */
@@ -70,7 +71,6 @@
     width: 40vw;
     min-width: 360px;
     animation: floatTree 6s ease-in-out infinite;
-    cursor: pointer;
   }
 
   /* ROCK */
@@ -80,7 +80,6 @@
     width: 26vw;
     min-width: 260px;
     animation: floatRock 7s ease-in-out infinite;
-    cursor: pointer;
   }
 
   /* LEAF */
@@ -90,7 +89,6 @@
     width: 20vw;
     min-width: 200px;
     animation: floatLeaf 5s ease-in-out infinite;
-    cursor: pointer;
   }
 
   /* Floating motions */
@@ -141,17 +139,36 @@
     document.getElementById("leaf")
   ];
 
+  // simple flag so the sequence only runs once
+  let sceneAlreadyTriggered = false;
+
+  function playCollectSound() {
+    // create a fresh audio each click tied to user interaction
+    const audio = new Audio("picture/collect.mp3");
+    audio.volume = 0.9; // adjust if too loud/soft
+    audio.play().catch(err => {
+      console.log("collect sound blocked:", err);
+    });
+  }
+
   // When ANY object is clicked:
   sprites.forEach(sprite => {
     sprite.addEventListener("click", () => {
+      if (sceneAlreadyTriggered) return;
+      sceneAlreadyTriggered = true;
+
+      playCollectSound();   // 🔊 play collect sound
       fadeOutObject(sprite);
     });
   });
 
   function fadeOutObject(obj) {
-    // fade out the sprite
+    // fade out the clicked sprite
     obj.style.opacity = "0";
     obj.style.pointerEvents = "none";
+
+    // disable clicks on others too
+    sprites.forEach(s => s.style.pointerEvents = "none");
 
     // show poetic text
     setTimeout(() => {
