@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>a flower is not a flower</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: url("picture/bg.jpg") center/cover no-repeat;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* MAIN FRAME */
+    #frame {
+      display: grid;
+      grid-template-columns: 26vw 1fr;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* LEFT GIF */
+    #left-panel {
+      background: #000;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    #left-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.75);
+    }
+
+    /* RIGHT POEM SIDE */
+    #right-panel {
+      position: relative;
+      overflow: hidden;
+      background: url("picture/right-1.gif") center/cover no-repeat;
+    }
+
+    #right-overlay {
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(1.5px);
+      background: rgba(255, 255, 255, 0.10);
+    }
+
+    /* POEM LINES */
+    .poem-line {
+      position: absolute;
+      padding: 6px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.85);
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease;
+      text-shadow: 0 0 6px rgba(255,255,255,1);
+      box-shadow:
+        0 0 12px rgba(255,255,255,0.8),
+        0 0 28px rgba(255,255,255,0.55),
+        0 4px 18px rgba(0,0,0,0.25);
+      backdrop-filter: blur(4px);
+    }
+
+    .poem-line.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* CREDIT TILE */
+    #credit-tile {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      padding: 6px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      box-shadow:
+        0 0 12px rgba(255,255,255,0.8),
+        0 0 30px rgba(255,255,255,0.6);
+      cursor: pointer;
+    }
+
+    #credit-tile.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #hint {
+      position: absolute;
+      bottom: 16px;
+      left: 24px;
+      font-size: 11px;
+      color: #eee;
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+      opacity: 0.75;
+    }
+
+    /* OVERLAY TEXTURE */
+    #texture-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: url("picture/overlay.gif") repeat;
+      background-size: cover;
+      opacity: 0.25;
+      mix-blend-mode: screen;
+      z-index: 999;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- FRAME -->
+  <div id="frame">
+    <div id="left-panel">
+      <img src="picture/right-2.gif" />
+    </div>
+
+    <div id="right-panel">
+      <div id="right-overlay"></div>
+  
+      <div id="credit-tile">keep going</div>
+    </div>
+  </div>
+
+  <!-- NOISE OVERLAY -->
+  <div id="texture-overlay"></div>
+
+<script>
+/* ---------- tiny popup content ---------- */
+const POPUPS = {
+  flower: {
+    gif: "picture/flower.gif",
+    lines: [
+      "choosing their own lining",
+      "and the ring they'll take",
+      "you almost said something, then didn’t."
+    ]
+  },
+  gate: {
+    gif: "picture/gate.gif",
+    lines: [
+      "a gate you passed without knowing.",
+      "on the other side, someone waited.",
+      "you walk through it now, too late."
+    ]
+  },
+  train: {
+    gif: "picture/train.gif",
+    lines: [
+      "a train you never meant to board.",
+      "still, the platform remembers your weight.",
+      "its windows carry a version of you."
+    ]
+  }
+};
+
+/* ---------- poem lines in original layout ---------- */
+const LINES = [
+  { text: "a flower is not a flower", x: 58, y: 19 },
+  { text: "it is made up only of non-flower elements", x: 60, y: 28, popupKey: "flower" },
+  { text: "sunshine, clouds, time, space,", x: 42, y: 36 },
+  { text: "earth, minerals, gardeners, and so on", x: 72, y: 42, popupKey: "gate" },
+  { text: "a true flower contains the whole universe", x: 55, y: 51 },
+  { text: "if we return any one of these elements to its source,", x: 44, y: 60 },
+  { text: "there will be no flower.", x: 70, y: 68, popupKey: "train" }
+];
+
+const rightPanel = document.getElementById("right-panel");
+const creditTile = document.getElementById("credit-tile");
+const created = [];
+
+/* ---------- create poem lines ---------- */
+function initLines() {
+  LINES.forEach((line, i) => {
+    const node = document.createElement("div");
+    node.className = "poem-line";
+    node.textContent = line.text;
+
+    node.style.left = line.x + "%";
+    node.style.top  = line.y + "%";
+    node.style.transform = "translate(-50%, -50%)";
+
+    node.onclick = () => handleClick(i, node);
+
+    rightPanel.appendChild(node);
+    created.push(node);
+  });
+
+  // show the first line immediately
+  created[0].classList.add("visible");
+}
+
+function handleClick(i, node) {
+  const line = LINES[i];
+
+  if (line.popupKey) openMiniPopup(line.popupKey);
+
+  const next = i + 1;
+  if (next < created.length) {
+    created[next].classList.add("visible");
+  } else {
+    creditTile.classList.add("visible");
+  }
+}
+
+/* ---------- mini popup ---------- */
+function openMiniPopup(key) {
+  const cfg = POPUPS[key];
+  if (!cfg) return;
+
+  const w = 220, h = 170;
+  const left = Math.random() * (screen.availWidth - w);
+  const top  = Math.random() * (screen.availHeight - h);
+
+  const win = window.open("", "_blank",
+    `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no`);
+
+  if (!win) return;
+
+  const text = cfg.lines[Math.floor(Math.random() * cfg.lines.length)];
+
+  win.document.write(`
+  <html><head><style>
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+      font-family: Georgia, serif;
+    }
+    .bg {
+      position: absolute;
+      inset: 0;
+      background: url("${cfg.gif}") center/cover no-repeat;
+      filter: blur(1.5px) brightness(0.6);
+    }
+    .glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 70%);
+      filter: blur(3px);
+    }
+    .text {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 12px;
+      text-align: center;
+      color: #222;
+      text-shadow: 0 0 5px white;
+    }
+  </style></head>
+  <body>
+    <div class="bg"></div>
+    <div class="glow"></div>
+    <div class="text">${text}</div>
+  </body></html>`);
+}
+
+/* ---------- credit button: alert + go to scene1 ---------- */
+creditTile.addEventListener("click", () => {
+  alert("this was the world i was given.");
+  window.location.href = "scene1.html"; // make sure scene1.html is in the same folder
+});
+
+initLines();
+</script>
+
+</body>
+</html>

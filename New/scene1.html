@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>scene 1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: #000;
+    font-family: system-ui, sans-serif;
+    position: relative;
+  }
+
+  /* Background image */
+  #scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: url("picture/house.png") center/cover no-repeat;
+    opacity: 1;
+    transition: opacity 1.6s ease;
+  }
+
+  /* Poetic fading text */
+  #poem-line {
+    position: absolute;
+    width: 100%;
+    bottom: 10%;
+    text-align: center;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    color: white;
+    opacity: 0;
+    text-shadow: 0 0 14px rgba(255,255,255,0.8);
+    transition: opacity 1.4s ease;
+    pointer-events: none;
+  }
+
+  /* Overlay texture */
+  #texture-overlay {
+    position: fixed;
+    inset: 0;
+    background: url("picture/overlay.gif") repeat;
+    background-size: cover;
+    mix-blend-mode: screen;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  /* SPRITES */
+  .sprite {
+    position: absolute;
+    image-rendering: auto;
+    pointer-events: auto;
+    opacity: 1;
+    transition: opacity 0.8s ease, transform 0.6s ease;
+  }
+
+  /* TREE (made higher & larger) */
+  #tree {
+    left: 60%;
+    top: 28%;
+    width: 40vw;
+    min-width: 360px;
+    animation: floatTree 6s ease-in-out infinite;
+    cursor: pointer;
+  }
+
+  /* ROCK */
+  #rock {
+    left: 30%;
+    top: 48%;
+    width: 26vw;
+    min-width: 260px;
+    animation: floatRock 7s ease-in-out infinite;
+    cursor: pointer;
+  }
+
+  /* LEAF */
+  #leaf {
+    left: 15%;
+    top: 25%;
+    width: 20vw;
+    min-width: 200px;
+    animation: floatLeaf 5s ease-in-out infinite;
+    cursor: pointer;
+  }
+
+  /* Floating motions */
+  @keyframes floatTree {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+  }
+
+  @keyframes floatRock {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+  }
+
+  @keyframes floatLeaf {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-14px); }
+    100% { transform: translateY(0px); }
+  }
+</style>
+</head>
+
+
+<body>
+
+<div id="scene">
+
+  <!-- Object Images -->
+  <img id="tree" class="sprite" src="picture/tree.png">
+  <img id="rock" class="sprite" src="picture/rock.png">
+  <img id="leaf" class="sprite" src="picture/leaf.png">
+
+  <!-- Fading poetic line -->
+  <div id="poem-line">and so the things you carried slipped quietly from your hands…</div>
+
+</div>
+
+<div id="texture-overlay"></div>
+
+<script>
+  const poemLine = document.getElementById("poem-line");
+  const scene = document.getElementById("scene");
+
+  const sprites = [
+    document.getElementById("tree"),
+    document.getElementById("rock"),
+    document.getElementById("leaf")
+  ];
+
+  // When ANY object is clicked:
+  sprites.forEach(sprite => {
+    sprite.addEventListener("click", () => {
+      fadeOutObject(sprite);
+    });
+  });
+
+  function fadeOutObject(obj) {
+    // fade out the sprite
+    obj.style.opacity = "0";
+    obj.style.pointerEvents = "none";
+
+    // show poetic text
+    setTimeout(() => {
+      poemLine.style.opacity = "1";
+    }, 300);
+
+    // fade whole scene after text
+    setTimeout(() => {
+      scene.style.opacity = "0";
+    }, 2400);
+
+    // go to next page
+    setTimeout(() => {
+      window.location.href = "scene2.html";   // ← change if needed
+    }, 4200);
+  }
+</script>
+
+</body>
+</html>

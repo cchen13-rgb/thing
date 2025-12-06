@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Italiana&family=Wix+Madefor+Display:wght@400..800&display=swap');
+</style>
+<meta charset="UTF-8" />
+<title>Here, Flower Picking, Manila North</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: url("water.gif") center/cover no-repeat;
+    font-family: "Didot", serif;
+    position: relative;
+  }
+
+  /* texture overlay */
+  #texture-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: url("picture/overlay.gif") repeat;
+    background-size: cover;
+    opacity: 0.25;
+    mix-blend-mode: screen;
+    z-index: 20;
+  }
+
+  /* lowered title */
+  #title {
+  font-family: "Italiana", serif;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4.2vw;
+    color: #ffffff;
+    white-space: nowrap;
+    text-shadow: 0 0 14px rgba(255,255,255,0.7);
+    z-index: 10;
+  }
+
+  /* lowered start box */
+  #start-box {
+    position: absolute;
+    top: 72%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 340px; 
+    padding: 20px 26px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 22px;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    color: #222;
+    line-height: 1.5;
+    box-shadow:
+      0 0 20px rgba(255,255,255,0.9),
+      0 0 40px rgba(255,255,255,0.5);
+    z-index: 10;
+    cursor: pointer;
+  }
+
+  #start-box:hover {
+    box-shadow:
+      0 0 26px rgba(255,255,255,1),
+      0 0 56px rgba(255,255,255,0.6);
+  }
+
+  /* footer */
+  #footer {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 8px rgba(0,0,0,0.7);
+    z-index: 10;
+  }
+</style>
+</head>
+
+<body>
+
+  <div id="title">Here Lies a Flower</div>
+
+  <div id="start-box" onclick="openPopup()">
+    <br><br>
+
+  </div>
+
+  <div id="footer">if nothing happens, check your popup settings</div>
+
+  <div id="texture-overlay"></div>
+
+<script>
+function openPopup() {
+  // Bigger centered popup for poem.html
+  const popupWidth  = 1100;
+  const popupHeight = 700;
+
+  const left = (window.screen.availWidth  - popupWidth)  / 2;
+  const top  = (window.screen.availHeight - popupHeight) / 2;
+
+  window.open(
+    "poem.html",
+    "poemWindow",
+    `width=${popupWidth},height=${popupHeight},left=${left},top=${top},` +
+    `menubar=no,toolbar=no,location=no,resizable=yes,scrollbars=yes`
+  );
+}
+</script>
+
+</body>
+</html>

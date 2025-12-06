@@ -1,0 +1,216 @@
+/* GLOBAL RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow: hidden;
+  font-family: "Courier New", monospace;
+  text-transform: lowercase;
+  color: #eaf4ff;
+  background: #000;
+}
+
+/* Manila-North style cloud background */
+.cloud-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+
+  background:
+    radial-gradient(circle at 40% 30%, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.8) 70%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.9) 75%),
+    linear-gradient(to bottom, #1a1a1a 0%, #000000 100%);
+
+  background-blend-mode: screen, overlay, normal;
+
+  filter: blur(4px) brightness(0.85) contrast(1.4) grayscale(1);
+}
+
+/* Film grain */
+.cloud-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.25;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+/* INTRO PAGE */
+.intro-title {
+  position: absolute;
+  top: 20vh;
+  width: 100%;
+  text-align: center;
+  font-family: "Times New Roman", serif;
+  font-size: 48px;
+  color: #eaf4ff;
+  z-index: 5;
+}
+
+.intro-box {
+  position: absolute;
+  top: 56vh;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 20px 34px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 20px;
+  color: #000;
+  font-size: 14px;
+  z-index: 5;
+}
+
+/* CENTER GIF */
+.center-gif {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  z-index: 3;
+  filter: grayscale(1) brightness(1.2);
+  animation: float 6s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  0% { transform: translate(-50%, -49%); }
+  100% { transform: translate(-50%, -51%); }
+}
+
+/* DIALOGUE BAR */
+#dialogue-bar {
+  position: fixed;
+  bottom: 8vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 20;
+}
+
+.dialogue-pill {
+  background: rgba(0,0,0,0.85);
+  padding: 12px 26px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: opacity .3s ease;
+}
+
+/* FINAL MESSAGE */
+#final-message {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  background: rgba(0,0,0,0.85);
+  padding: 20px 50px;
+  border-radius: 50px;
+  font-family: "Times New Roman", serif;
+  font-size: 32px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+  z-index: 30;
+}
+
+/* POPUP WINDOW */
+#popup-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.popup-window {
+  position: absolute;
+  width: 240px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b0b0b;
+  pointer-events: auto;
+  box-shadow: 0 16px 28px rgba(0,0,0,0.85);
+  cursor: grab;
+}
+
+.popup-header {
+  height: 26px;
+  background: #cfe8ff;
+  font-size: 11px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  color: #00334d;
+}
+
+.popup-icon {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.popup-url {
+  flex: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  font-size: 11px;
+}
+
+.popup-dots {
+  margin-left: 5px;
+  letter-spacing: 1px;
+}
+
+.popup-body img {
+  width: 100%;
+}
+
+/* SCENE 2 */
+.scene2-left {
+  position: fixed;
+  left: 0;
+  width: 35%;
+  height: 100%;
+  background: url("picture/bg-main.jpg") center/cover;
+  filter: grayscale(1) brightness(0.9);
+}
+
+.scene2-right {
+  position: fixed;
+  right: 0;
+  width: 65%;
+  height: 100%;
+  background: url("picture/gif4.gif") center/cover;
+  filter: grayscale(1) brightness(1.15);
+}
+
+.poem-line {
+  position: absolute;
+  background: rgba(255,255,255,0.85);
+  padding: 6px 16px;
+  border-radius: 14px;
+  color: #000;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  font-size: 13px;
+}
+
+/* SCENE 3 */
+.option {
+  position: absolute;
+  background: rgba(0,0,0,0.9);
+  padding: 10px 26px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 1s ease;
+}

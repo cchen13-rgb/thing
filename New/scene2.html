@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>look at what we were</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000000;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      /* soft fade-in on arrival */
+      opacity: 0;
+      animation: fadeInScene 1.8s ease forwards;
+    }
+
+    @keyframes fadeInScene {
+      to { opacity: 1; }
+    }
+
+    /* main framed field */
+    #frame {
+      position: relative;
+      width: min(96vw, 1440px);
+      height: min(60vw, 650px); /* wide cinematic feel */
+
+      background: #000;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow:
+        0 0 40px rgba(0, 0, 0, 0.9),
+        0 0 120px rgba(0, 0, 0, 1);
+      overflow: hidden;
+    }
+
+    /* inner glowing field */
+    #field {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: url("picture/right-3.gif") center/cover no-repeat;
+      box-shadow:
+        0 0 80px 30px rgba(255, 255, 255, 0.9) inset,
+        0 0 180px 40px rgba(255, 255, 255, 0.9) inset;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    /* gradient bloom on top of the gif */
+    #field-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at center, transparent 45%, rgba(255,255,255,0.6) 100%);
+      mix-blend-mode: screen;
+      opacity: 0.95;
+    }
+
+    /* bottom subtitle text pill */
+    #bottom-text {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+
+      padding: 6px 24px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.96);
+      color: #222;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: lowercase;
+      white-space: nowrap;
+
+      box-shadow:
+        0 0 16px rgba(255, 255, 255, 0.95),
+        0 0 32px rgba(255, 255, 255, 0.9),
+        0 6px 18px rgba(255, 255, 255, 0.7);
+
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    /* optional tiny note (currently empty, can fill later) */
+    #corner-note {
+      position: absolute;
+      bottom: 8px;
+      right: 16px;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+      text-shadow: 0 0 10px rgba(0,0,0,1);
+    }
+
+    /* global texture overlay gif */
+    #texture-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      background: url("picture/overlay.gif") repeat;
+      background-size: cover;
+      opacity: 0.25;
+      mix-blend-mode: screen;
+    }
+
+    @media (max-width: 700px) {
+      #frame {
+        padding: 10px;
+      }
+      #bottom-text {
+        font-size: 12px;
+        padding: 5px 18px;
+      }
+      #corner-note {
+        font-size: 9px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="frame">
+    <div id="field">
+      <div id="field-overlay"></div>
+      <div id="bottom-text"></div>
+      <div id="corner-note"></div>
+    </div>
+  </div>
+
+  <!-- texture overlay over whole page -->
+  <div id="texture-overlay"></div>
+
+  <script>
+    // Lines of the ending text, like subtitles
+    const LINES = [
+      "later, in another field, the things you carried are nowhere to be seen.",
+      "only the light remembers them: a tree that once was, a stone in a pocket, a leaf folded between pages.",
+      "you stand there with empty hands, and still, the world feels full.",
+      "this is enough.",
+      "look at what we were."
+    ];
+
+    const bottomText = document.getElementById("bottom-text");
+
+    const DISPLAY_TIME = 5000; // how long each line stays (ms)
+    const FADE_TIME = 800;     // keep in sync with CSS transition
+
+    let index = 0;
+
+    function showLine(i) {
+      if (i >= LINES.length) return;
+
+      // fade out current line
+      bottomText.style.opacity = 0;
+
+      setTimeout(() => {
+        // set new text and fade in
+        bottomText.textContent = LINES[i];
+        bottomText.style.whiteSpace = "nowrap";
+
+        // if a line is long, allow wrapping on small screens
+        if (window.innerWidth < 700) {
+          bottomText.style.whiteSpace = "normal";
+        }
+
+        bottomText.style.opacity = 1;
+
+        // schedule next line
+        if (i + 1 < LINES.length) {
+          setTimeout(() => showLine(i + 1), DISPLAY_TIME);
+        }
+      }, FADE_TIME);
+    }
+
+    // start subtitles after a short pause when page loads
+    window.addEventListener("load", () => {
+      setTimeout(() => showLine(0), 1200);
+    });
+  </script>
+</body>
+</html>
